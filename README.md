@@ -12,7 +12,7 @@ https://beta.openai.com/account/api-keys
 ```
 #### Command:
 ```
-python3 chatGTP.py
+python3 chat_gpt.py
 ```
 
 ![GUI](https://github.com/actionschnitzel/chatgpt-python-gui/blob/main/py_chat.png)
