@@ -12,8 +12,8 @@ class ApiPopup(tk.Toplevel):
         super().__init__(parent)
 
         self.resizable(0, 0)
-        app_width = 400
-        app_height = 150
+        app_width = 600
+        app_height = 100
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
         x = (screen_width / 2) - (app_width / 2)
@@ -24,7 +24,7 @@ class ApiPopup(tk.Toplevel):
         def write_key():
 
             if key_entry.get() == "Enter API Key" or key_entry.get() == "":
-                messagebox.showerror(title=None, message="No API-KEY Found!")
+                messagebox.showerror(title=None, message="No API-KEY Entered")
                 print("No Key Found!")
             else:
                 f = open('key', 'w')
@@ -70,7 +70,6 @@ class GptGUI(tk.Tk):
             chat_answer.delete("1.0", END)
 
         def ask_chatgtp():
-
             with open("key", "r") as key_file:
                 for line in lines_that_contain("api_key=", key_file):
                     print(line)
@@ -79,12 +78,9 @@ class GptGUI(tk.Tk):
             prompt = str(qeustion_entry.get())
             if qeustion_entry.get() == "":
                 messagebox.showerror(title=None, message="No Input!")
-
             elif line == "api_key=None":
                 messagebox.showerror(title=None, message="No API-Key!")
-
             else:
-
                 openai.api_key = str(line[8:])
                 completions = openai.Completion.create(
                     engine="text-davinci-002",
@@ -102,6 +98,7 @@ class GptGUI(tk.Tk):
                 chat_answer.yview(END)
                 qeustion_entry.delete(0, 'end')
                 print(message)
+ 
 
         global key_label
         key_label = Label(self, text="API-Key=None")
@@ -117,13 +114,6 @@ class GptGUI(tk.Tk):
             key_label.config(text=api_key)
         
 
-        #print(api_key[8:])
-
-
-
-
-
-
         key_entry = ttk.Button(self, text="Set API-Key", command=key_check)
         key_entry.pack(fill="x", padx=20, pady=10)
 
@@ -138,15 +128,21 @@ class GptGUI(tk.Tk):
         scroll_chat_answer.config(command=chat_answer.yview)
         chat_answer.pack(fill=tk.BOTH, expand=True)
 
+        global status_label
+        status_label = Label(self, text=" ")
+        status_label.pack(fill="x")
+
         question_frame_frame = Frame(self, pady=20)
         question_frame_frame.pack(padx=20, fill="x")
 
         qeustion_entry = ttk.Entry(question_frame_frame)
         qeustion_entry.pack(fill="x", expand=True, side=LEFT)
+        qeustion_entry.bind("<Return>", (lambda event: ask_chatgtp()))
 
         submit_btn = ttk.Button(question_frame_frame,
                                 text="Submit", command=ask_chatgtp)
         submit_btn.pack()
+
 
         del_chat = ttk.Button(self, text="Clear Chat", command=del_chet)
         del_chat.pack(fill="x", padx=20, pady=10)
